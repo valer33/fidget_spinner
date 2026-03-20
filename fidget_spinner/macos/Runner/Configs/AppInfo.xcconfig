@@ -8,7 +8,7 @@
 PRODUCT_NAME = fidget_spinner
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.rushpocket.fidgetSpinner
+PRODUCT_BUNDLE_IDENTIFIER = com.formfresh.fidgetSpinner
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2026 com.rushpocket. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2026 com.formfresh. All rights reserved.
