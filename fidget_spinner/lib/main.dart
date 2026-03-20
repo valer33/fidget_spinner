@@ -67,8 +67,8 @@ class _SpinnerScreenState extends State<SpinnerScreen>
               ),
               child: Center(
                 child: Container(
-                  width: 40,
-                  height: 40,
+                  width: 50,
+                  height: 50,
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     color: Colors.white,
