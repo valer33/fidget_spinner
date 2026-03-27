@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'constants.dart';
 import 'services/storage_service.dart';
 import 'screens/home_screen.dart';
 
@@ -20,7 +21,7 @@ void main() async {
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
-      systemNavigationBarColor: Color(0xFF0A0A0A),
+      systemNavigationBarColor: kBackground,
       systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
@@ -40,10 +41,10 @@ class FormFreshFidgetApp extends StatelessWidget {
         useMaterial3: true,
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF00D4FF),
+          seedColor: kAccent,
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFF0A0A0A),
+        scaffoldBackgroundColor: kBackground,
       ),
       home: const FidgetHomeScreen(),
     );

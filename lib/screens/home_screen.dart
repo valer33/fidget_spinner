@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants.dart';
 import '../services/storage_service.dart';
 import '../widgets/spinner_fidget.dart';
 import '../widgets/stat_card.dart';
@@ -36,22 +37,18 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
   }
 
   Future<void> _onSpinEnd(int duration) async {
-    // Update total spins
-    int newTotalSpins = _totalSpins + 1;
-    await StorageService.setTotalSpins(newTotalSpins);
+    final newTotalSpins = _totalSpins + 1;
+    final newLongest = duration > _longestSpin ? duration : _longestSpin;
 
-    // Update longest spin
-    int currentLongest = StorageService.getLongestSpin();
-    if (duration > currentLongest) {
+    await StorageService.setTotalSpins(newTotalSpins);
+    if (duration > _longestSpin) {
       await StorageService.setLongestSpin(duration);
     }
 
     setState(() {
       _lastSpinTime = duration;
       _totalSpins = newTotalSpins;
-      if (duration > _longestSpin) {
-        _longestSpin = duration;
-      }
+      _longestSpin = newLongest;
     });
   }
 
@@ -66,7 +63,7 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: kBackground,
       body: SafeArea(
         child: Stack(
           children: [
@@ -116,10 +113,10 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1A1A1A),
+                      color: kSurface,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color(0xFF00D4FF).withValues(alpha: 0.15),
+                        color: kAccent.withValues(alpha: 0.15),
                         width: 1,
                       ),
                     ),
@@ -128,14 +125,14 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
                       children: [
                         const Icon(
                           Icons.emoji_events,
-                          color: Color(0xFF00D4FF),
+                          color: kAccent,
                           size: 20,
                         ),
                         const SizedBox(width: 8),
                         Text(
                           'Best: ${_longestSpin}s',
                           style: const TextStyle(
-                            color: Color(0xFF00D4FF),
+                            color: kAccent,
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -155,7 +152,7 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
               child: IconButton(
                 icon: const Icon(
                   Icons.settings,
-                  color: Color(0xFF888888),
+                  color: kTextMuted,
                 ),
                 onPressed: () async {
                   await Navigator.push(

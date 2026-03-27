@@ -15,7 +15,6 @@ class StorageService {
   // Settings
   static const String _hapticIntensityKey = 'haptic_intensity';
   static const String _sensitivityKey = 'sensitivity';
-  static const String _soundEnabledKey = 'sound_enabled';
 
   // Stats getters/setters
   static int getTotalSpins() => _prefs?.getInt(_totalSpinsKey) ?? 0;
@@ -46,8 +45,4 @@ class StorageService {
     await _prefs?.setDouble(_sensitivityKey, value);
   }
 
-  static bool getSoundEnabled() => _prefs?.getBool(_soundEnabledKey) ?? false;
-  static Future<void> setSoundEnabled(bool value) async {
-    await _prefs?.setBool(_soundEnabledKey, value);
-  }
 }

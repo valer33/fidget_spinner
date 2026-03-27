@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants.dart';
 import '../services/storage_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -11,28 +12,25 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   late int _hapticIntensity;
   late double _sensitivity;
-  late bool _soundEnabled;
 
   @override
   void initState() {
     super.initState();
     _hapticIntensity = StorageService.getHapticIntensity();
     _sensitivity = StorageService.getSensitivity();
-    _soundEnabled = StorageService.getSoundEnabled();
   }
 
   Future<void> _saveSettings() async {
     await StorageService.setHapticIntensity(_hapticIntensity);
     await StorageService.setSensitivity(_sensitivity);
-    await StorageService.setSoundEnabled(_soundEnabled);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
+      backgroundColor: kBackground,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
+        backgroundColor: kBackground,
         foregroundColor: Colors.white,
         title: const Text('Settings'),
         centerTitle: true,
@@ -59,15 +57,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
                 style: ButtonStyle(
                   foregroundColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) {
-                      return const Color(0xFF00D4FF);
-                    }
+                    if (states.contains(WidgetState.selected)) return kAccent;
                     return Colors.white;
                   }),
                   backgroundColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.selected)) {
-                      return const Color(0xFF1A1A1A);
-                    }
+                    if (states.contains(WidgetState.selected)) return kSurface;
                     return Colors.transparent;
                   }),
                 ),
@@ -85,8 +79,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     value: _sensitivity,
                     min: 0.5,
                     max: 2.0,
-                    activeColor: const Color(0xFF00D4FF),
-                    inactiveColor: const Color(0xFF333333),
+                    activeColor: kAccent,
+                    inactiveColor: kBorder,
                     onChanged: (value) {
                       setState(() => _sensitivity = value);
                     },
@@ -94,24 +88,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   Text(
                     _sensitivity < 1.0 ? 'Light' : (_sensitivity > 1.0 ? 'Strong' : 'Normal'),
-                    style: const TextStyle(color: Color(0xFF00D4FF)),
+                    style: const TextStyle(color: kAccent),
                   ),
                 ],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Sound
-            _SettingCard(
-              title: 'Sound Effects',
-              subtitle: 'Play sounds during spin',
-              child: Switch(
-                value: _soundEnabled,
-                activeTrackColor: const Color(0xFF00D4FF),
-                onChanged: (value) {
-                  setState(() => _soundEnabled = value);
-                  _saveSettings();
-                },
               ),
             ),
             const SizedBox(height: 32),
@@ -135,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
                 child: const Text(
                   'Reset Statistics',
-                  style: TextStyle(color: Color(0xFFFF4444)),
+                  style: TextStyle(color: kDanger),
                 ),
               ),
             ),
@@ -162,10 +141,10 @@ class _SettingCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A1A),
+        color: kSurface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: const Color(0xFF00D4FF).withValues(alpha: 0.15),
+          color: kAccent.withValues(alpha: 0.15),
           width: 1,
         ),
       ),
@@ -185,7 +164,7 @@ class _SettingCard extends StatelessWidget {
             subtitle,
             style: const TextStyle(
               fontSize: 12,
-              color: Color(0xFF888888),
+              color: kTextMuted,
             ),
           ),
           const SizedBox(height: 16),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:math';
+import '../constants.dart';
 
 class SpinnerFidget extends StatefulWidget {
   final VoidCallback onSpinStart;
@@ -30,11 +31,11 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
   Timer? _decayTimer;
   double _lastHapticPosition = 0;
 
-  static const double _friction = 0.95;
-  static const double _velocityThreshold = 0.01;
-  static const Duration _decayInterval = Duration(milliseconds: 50);
-  static const double _swipeMultiplier = 0.01;
-  static const double _hapticTriggerThreshold = 0.05;
+  static const double _friction = kFriction;
+  static const double _velocityThreshold = kVelocityThreshold;
+  static const Duration _decayInterval = kDecayInterval;
+  static const double _swipeMultiplier = kSwipeMultiplier;
+  static const double _hapticTriggerThreshold = kHapticTriggerThreshold;
 
   void _triggerHaptic({bool isHeavy = false}) {
     if (widget.hapticIntensity == 0) return; // Haptics off
@@ -115,19 +116,11 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
     _currentVelocity = 0;
   }
 
-  void _onPanStart(DragStartDetails details) {
-    // Track initial position if needed for future enhancements
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    // Track movement if needed for future enhancements
-  }
-
   void _onPanEnd(DragEndDetails details) {
     double swipeVelocity = details.velocity.pixelsPerSecond.distance;
     // Apply sensitivity modifier
     double adjustedVelocity = swipeVelocity * _swipeMultiplier * widget.sensitivity;
-    double spinVelocity = adjustedVelocity.clamp(0.5, 15.0);
+    double spinVelocity = adjustedVelocity.clamp(kMinVelocity, kMaxVelocity);
     
     _startSpin(spinVelocity);
   }
@@ -135,13 +128,11 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onPanStart: _onPanStart,
-      onPanUpdate: _onPanUpdate,
       onPanEnd: _onPanEnd,
       child: Transform.rotate(
         angle: _totalRotation * 2 * pi,
         child: CustomPaint(
-          size: const Size(180, 180),
+          size: const Size(kSpinnerSize, kSpinnerSize),
           painter: LuxeSpinnerPainter(),
         ),
       ),
@@ -163,18 +154,15 @@ class LuxeSpinnerPainter extends CustomPainter {
 
     // Outer circle gradient - cyan accent
     final outerPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          const Color(0xFF00D4FF),
-          const Color(0xFF0099CC),
-        ],
+      ..shader = const RadialGradient(
+        colors: [kAccent, kAccentMuted],
       ).createShader(Rect.fromCircle(center: center, radius: radius))
       ..style = PaintingStyle.fill;
 
     canvas.drawCircle(center, radius, outerPaint);
 
     // Three bearing balls - white with subtle glow
-    final ballRadius = 12.0;
+    const ballRadius = kBallRadius;
     final ballDistance = radius - 20;
     
     for (int i = 0; i < 3; i++) {
@@ -184,7 +172,7 @@ class LuxeSpinnerPainter extends CustomPainter {
       
       // Ball glow
       final glowPaint = Paint()
-        ..color = const Color(0xFF00D4FF).withValues(alpha: 0.3)
+        ..color = kAccent.withValues(alpha: 0.3)
         ..style = PaintingStyle.fill;
       
       canvas.drawCircle(Offset(ballX, ballY), ballRadius + 4, glowPaint);
@@ -202,15 +190,15 @@ class LuxeSpinnerPainter extends CustomPainter {
       ..color = Colors.white
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(center, 15, centerPaint);
+    canvas.drawCircle(center, kCenterBearingRadius, centerPaint);
 
     // Center circle rim - cyan
     final rimPaint = Paint()
-      ..color = const Color(0xFF00D4FF)
+      ..color = kAccent
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2;
 
-    canvas.drawCircle(center, 15, rimPaint);
+    canvas.drawCircle(center, kCenterBearingRadius, rimPaint);
   }
 
   @override
