@@ -3,6 +3,7 @@ import '../constants.dart';
 import '../models/fidget_definition.dart';
 import '../models/fidget_registry.dart';
 import '../services/storage_service.dart';
+import '../widgets/corner_menu.dart';
 import '../widgets/fidget_toolbox.dart';
 import '../widgets/stat_card.dart';
 import 'settings_screen.dart';
@@ -23,6 +24,7 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
   int _hapticIntensity = 3;
   int _activeFidgetIndex = 0;
   bool _toolboxOpen = false;
+  bool _menuOpen = false;
 
   @override
   void initState() {
@@ -66,6 +68,9 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
 
   void _openToolbox() => setState(() => _toolboxOpen = true);
   void _closeToolbox() => setState(() => _toolboxOpen = false);
+
+  void _openMenu() => setState(() => _menuOpen = true);
+  void _closeMenu() => setState(() => _menuOpen = false);
 
   void _selectFidget(int index) {
     setState(() {
@@ -164,10 +169,20 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
               ),
             ),
 
-            // Settings button
+            // Corner menu icon — top left
             Positioned(
               top: 16,
-              right: 20,
+              left: 8,
+              child: IconButton(
+                icon: const Icon(Icons.menu, color: kTextMuted),
+                onPressed: _openMenu,
+              ),
+            ),
+
+            // Settings button — top right
+            Positioned(
+              top: 16,
+              right: 8,
               child: IconButton(
                 icon: const Icon(Icons.settings, color: kTextMuted),
                 onPressed: () async {
@@ -189,6 +204,10 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
                 onSelect: _selectFidget,
                 onDismiss: _closeToolbox,
               ),
+
+            // Corner menu overlay
+            if (_menuOpen)
+              CornerMenu(onDismiss: _closeMenu),
           ],
         ),
       ),
