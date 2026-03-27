@@ -121,7 +121,10 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final size = min(constraints.maxWidth, constraints.maxHeight) * 0.82;
+        // Cap at 320 — appropriate for the largest iPhone (430pt width × 0.82)
+        final size =
+            (min(constraints.maxWidth, constraints.maxHeight) * 0.82)
+                .clamp(0.0, 320.0);
         return GestureDetector(
           onPanEnd: _onPanEnd,
           child: Transform.rotate(
