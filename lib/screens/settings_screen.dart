@@ -9,7 +9,7 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  late double _hapticIntensity;
+  late int _hapticIntensity;
   late double _sensitivity;
   late bool _soundEnabled;
 
@@ -45,24 +45,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
             _SettingCard(
               title: 'Haptic Intensity',
               subtitle: 'Strength of vibration feedback',
-              child: Column(
-                children: [
-                  Slider(
-                    value: _hapticIntensity,
-                    min: 0.0,
-                    max: 1.0,
-                    activeColor: const Color(0xFF00D4FF),
-                    inactiveColor: const Color(0xFF333333),
-                    onChanged: (value) {
-                      setState(() => _hapticIntensity = value);
-                    },
-                    onChangeEnd: (value) => _saveSettings(),
-                  ),
-                  Text(
-                    '${(_hapticIntensity * 100).toInt()}%',
-                    style: const TextStyle(color: Color(0xFF00D4FF)),
-                  ),
+              child: SegmentedButton<int>(
+                segments: const [
+                  ButtonSegment(value: 0, label: Text('Off')),
+                  ButtonSegment(value: 1, label: Text('Light')),
+                  ButtonSegment(value: 2, label: Text('Medium')),
+                  ButtonSegment(value: 3, label: Text('Heavy')),
                 ],
+                selected: {_hapticIntensity},
+                onSelectionChanged: (Set<int> selection) {
+                  setState(() => _hapticIntensity = selection.first);
+                  _saveSettings();
+                },
+                style: ButtonStyle(
+                  foregroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return const Color(0xFF00D4FF);
+                    }
+                    return Colors.white;
+                  }),
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    if (states.contains(WidgetState.selected)) {
+                      return const Color(0xFF1A1A1A);
+                    }
+                    return Colors.transparent;
+                  }),
+                ),
               ),
             ),
             const SizedBox(height: 16),

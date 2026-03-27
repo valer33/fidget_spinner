@@ -8,6 +8,7 @@ class SpinnerFidget extends StatefulWidget {
   final Function(int) onSpinEnd;
   final VoidCallback onHapticPulse;
   final double sensitivity;
+  final int hapticIntensity; // 0=off, 1=light, 2=medium, 3=heavy
 
   const SpinnerFidget({
     super.key,
@@ -15,6 +16,7 @@ class SpinnerFidget extends StatefulWidget {
     required this.onSpinEnd,
     required this.onHapticPulse,
     this.sensitivity = 1.0,
+    this.hapticIntensity = 3,
   });
 
   @override
@@ -34,13 +36,41 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
   static const double _swipeMultiplier = 0.01;
   static const double _hapticTriggerThreshold = 0.05;
 
+  void _triggerHaptic({bool isHeavy = false}) {
+    if (widget.hapticIntensity == 0) return; // Haptics off
+    
+    switch (widget.hapticIntensity) {
+      case 1:
+        HapticFeedback.lightImpact();
+        break;
+      case 2:
+        HapticFeedback.mediumImpact();
+        break;
+      case 3:
+      default:
+        HapticFeedback.heavyImpact();
+        break;
+    }
+    widget.onHapticPulse();
+  }
+
+  void _triggerLightHaptic() {
+    if (widget.hapticIntensity == 0) return;
+    
+    if (widget.hapticIntensity >= 2) {
+      HapticFeedback.mediumImpact();
+    } else {
+      HapticFeedback.lightImpact();
+    }
+  }
+
   void _startSpin(double velocity) {
     widget.onSpinStart();
     _spinStartTime = DateTime.now().millisecondsSinceEpoch;
     _currentVelocity = velocity;
     _decayTimer?.cancel();
 
-    HapticFeedback.heavyImpact();
+    _triggerHaptic(isHeavy: true);
 
     _decayTimer = Timer.periodic(_decayInterval, (_) {
       if (_currentVelocity.abs() < _velocityThreshold) {
@@ -64,8 +94,7 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
 
           if (distance < _hapticTriggerThreshold && 
               (_lastHapticPosition - normalizedRotation).abs() > 0.1) {
-            HapticFeedback.heavyImpact();
-            widget.onHapticPulse();
+            _triggerHaptic(isHeavy: true);
             _lastHapticPosition = normalizedRotation;
             break;
           }
@@ -74,7 +103,7 @@ class _SpinnerFidgetState extends State<SpinnerFidget> {
         if ((_totalRotation * 10).toInt() % 2 == 0 && 
             (_lastHapticPosition - normalizedRotation).abs() < 0.05) {
           if (_currentVelocity.abs() > 0.5) {
-            HapticFeedback.selectionClick();
+            _triggerLightHaptic();
           }
         }
       });

@@ -34,10 +34,10 @@ class StorageService {
   }
 
   // Settings getters/setters
-  // Haptic intensity: 0.0 (off) to 1.0 (full)
-  static double getHapticIntensity() => _prefs?.getDouble(_hapticIntensityKey) ?? 0.8;
-  static Future<void> setHapticIntensity(double value) async {
-    await _prefs?.setDouble(_hapticIntensityKey, value);
+  // Haptic intensity: 0 (off), 1 (light), 2 (medium), 3 (heavy)
+  static int getHapticIntensity() => _prefs?.getInt(_hapticIntensityKey) ?? 3;
+  static Future<void> setHapticIntensity(int value) async {
+    await _prefs?.setInt(_hapticIntensityKey, value);
   }
 
   // Sensitivity: 0.5 (low) to 2.0 (high)

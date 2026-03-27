@@ -17,6 +17,7 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
   int _hapticPulses = 0;
   int _longestSpin = 0;
   double _sensitivity = 1.0;
+  int _hapticIntensity = 3;
 
   @override
   void initState() {
@@ -30,6 +31,7 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
       _hapticPulses = StorageService.getTotalHapticPulses();
       _longestSpin = StorageService.getLongestSpin();
       _sensitivity = StorageService.getSensitivity();
+      _hapticIntensity = StorageService.getHapticIntensity();
     });
   }
 
@@ -77,6 +79,7 @@ class _FidgetHomeScreenState extends State<FidgetHomeScreen> {
                     child: Center(
                       child: SpinnerFidget(
                         sensitivity: _sensitivity,
+                        hapticIntensity: _hapticIntensity,
                         onSpinStart: () {},
                         onSpinEnd: _onSpinEnd,
                         onHapticPulse: _onHapticPulse,
